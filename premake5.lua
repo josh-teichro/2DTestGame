@@ -168,6 +168,7 @@ project "2DTestGame"
 
 	includedirs
 	{
+		"%{prj.name}/src",
 		"%{IncludeDir.SpdLog}",
 		"%{IncludeDir.GLM}",
 		"%{IncludeDir.ImGui}",

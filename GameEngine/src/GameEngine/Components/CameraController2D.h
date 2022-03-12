@@ -1,12 +1,12 @@
 #pragma once
 
 #include "GameEngine/Renderer/Camera.h"
-#include "GameEngine/Events/HandlesEvents.h"
+#include "GameEngine/Components/Component.h"
 
 namespace GameEngine
 {
 
-	class CameraController2D : public HandlesEvents
+	class CameraController2D : public Component
 	{
 	public:
 		enum class Mode
@@ -17,8 +17,9 @@ namespace GameEngine
 	public:
 		CameraController2D(float zoom, float aspectRatio);
 		CameraController2D(float zoom);
+		virtual ~CameraController2D() = default;
 
-		void OnUpdate();
+		virtual void OnUpdate() override;
 
 		virtual bool OnMouseDown(const MouseDownEvent& e) override;
 		virtual bool OnMouseScroll(const MouseScrollEvent& e) override;

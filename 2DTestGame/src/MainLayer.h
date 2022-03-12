@@ -2,6 +2,8 @@
 
 #include <GameEngine.h>
 
+using namespace GameEngine;
+
 class MainLayer : public GameEngine::Layer
 {
 public:
@@ -22,29 +24,19 @@ private:
 
 	GameEngine::ShaderLibrary m_shaderLibrary;
 
-	GameEngine::Renderer2D::RectTransform m_checkerboardTransform;
-	GameEngine::Renderer2D::RectMaterial m_checkerboardMaterial;
-
-	GameEngine::Renderer2D::RectTransform m_squareTransform;
-	float m_squareRotationDeg;
-	GameEngine::Renderer2D::RectMaterial m_squareMaterial;
-
-	glm::vec4 m_gradientStart, m_gradientStop;
-	int32_t m_gradientSteps;
+	// GameObjects
+	Ref<GameObject> m_player;
 
 	// red hood character
 	const glm::vec2 c_characterSheetSize = { 1344, 1463 };
 	const glm::vec2 c_characterSheetNumCells = { 12.0f, 11.0f };
 	const glm::vec2 c_characterSheetCellSize = c_characterSheetSize / c_characterSheetNumCells;
-
-	GameEngine::Renderer2D::RectTransform m_characterTransform;
-	GameEngine::Renderer2D::RectMaterial m_characterMaterial;
+	
+	Ref<RectMaterial> m_characterMaterial;
 	int32_t m_characterAnimationIndex;
 	int32_t m_characterAnimationFrameIndex;
 	float m_characterAnimationSpeed;
 	float m_characterAnimationTime;
-
-	bool m_walk = false;
 
 private:
 	void CreateScene();

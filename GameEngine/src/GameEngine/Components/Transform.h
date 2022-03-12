@@ -1,11 +1,15 @@
 #pragma once
 
+#include "gepch.h"
+
+#include "GameEngine/Components/Component.h"
+
 #include <glm/glm.hpp>
 
 namespace GameEngine
 {
 
-	class Transform
+	class Transform : public Component
 	{
 	public:
 		glm::vec3 position;
@@ -13,6 +17,7 @@ namespace GameEngine
 		glm::quat orientation;
 	public:
 		Transform() : position(0.0f), scale(1.0f), orientation() {}
+		virtual ~Transform() = default;
 
 		void Reset() {
 			position = glm::vec3(0.0f);
