@@ -7,8 +7,7 @@
 #include "GameEngine/Renderer/Texture.h"
 
 #include "GameEngine/Components/RectTransform.h"
-#include "GameEngine/Components/RectTexture.h"
-#include "GameEngine/Components/RectMaterial.h"
+#include "GameEngine/Components/Sprite.h"
 
 #include <glm/glm.hpp>
 
@@ -36,7 +35,7 @@ namespace GameEngine {
 
 		static void Flush();
 
-		static void DrawRect(const RectTransform& transform, const RectMaterial& material);
+		static void DrawRect(const RectTransform& transform, const Sprite& sprite, glm::vec4 color);
 
 		static API GetAPI() { return RenderCommand::GetAPI(); }
 

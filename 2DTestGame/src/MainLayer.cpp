@@ -36,9 +36,13 @@ void MainLayer::OnUpdate()
 		m_characterAnimationTime -= 1 / m_characterAnimationSpeed;
 	}
 
-	GameEngine::RectTexture& characterTexture = m_characterMaterial->texture;
-	characterTexture.textureCoords[0] = glm::vec2(m_characterAnimationFrameIndex, m_characterAnimationIndex) / c_characterSheetNumCells;
-	characterTexture.textureCoords[1] = glm::vec2(m_characterAnimationFrameIndex + 1, m_characterAnimationIndex + 1) / c_characterSheetNumCells;
+	m_characterSprite->textureRect.x = m_characterAnimationFrameIndex / c_characterSheetNumCells.x;
+	m_characterSprite->textureRect.y = m_characterAnimationIndex / c_characterSheetNumCells.y;
+	m_characterSprite->textureRect.width = 1.0f / c_characterSheetNumCells.x;
+	m_characterSprite->textureRect.height = 1.0f / c_characterSheetNumCells.y;
+
+	//characterTexture.textureCoords[0] = glm::vec2(m_characterAnimationFrameIndex, m_characterAnimationIndex) / c_characterSheetNumCells;
+	//characterTexture.textureCoords[1] = glm::vec2(m_characterAnimationFrameIndex + 1, m_characterAnimationIndex + 1) / c_characterSheetNumCells;
 
 	// draw scene
 	GameEngine::RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1.0f });
@@ -49,7 +53,7 @@ void MainLayer::OnUpdate()
 
 	Layer::OnUpdate();
 	// draw character
-	GameEngine::Renderer2D::DrawRect(*m_player->GetTransform(), *m_characterMaterial);
+	GameEngine::Renderer2D::DrawRect(*m_player->GetTransform(), *m_characterSprite, {1.0f, 1.0f, 1.0f, 1.0f});
 
 	GameEngine::Renderer2D::EndScene();
 }
@@ -78,6 +82,15 @@ void MainLayer::OnImGuiUpdate()
 	}
 	ImGui::DragFloat("Animation Speed", &m_characterAnimationSpeed, 1.0f, 0.0f, 60.0f);
 
+	Ref<Sprite> cubeSprite = m_cube->GetComponent<Sprite>();
+
+	ImGui::Text("Sprite");
+	ImGui::DragFloat2("Sprite Position", glm::value_ptr(m_cube->GetTransform()->position), 0.1f);
+	ImGui::DragFloat2("Sprite Texture Offset", glm::value_ptr(cubeSprite->textureOffset), 0.1f);
+	ImGui::DragFloat2("Sprite Texture Scale", glm::value_ptr(cubeSprite->textureScale), 0.1f);
+	ImGui::DragFloat4("Sprite Texture Rect", &cubeSprite->textureRect.x, 0.1f);
+	ImGui::ColorPicker4("Sprite Color", glm::value_ptr(m_cube->GetComponent<SpriteRenderer>()->color));
+
 	if (ImGui::Button("Reset"))
 	{
 		ResetScene();
@@ -104,9 +117,9 @@ void MainLayer::CreateScene()
 
 	m_player = CreateGameObject();
 
-	m_characterMaterial = m_player->AddComponent<RectMaterial>();
-	m_characterMaterial->texture.baseTexture = GameEngine::Texture2D::Create("./res/textures/red-hood-character-sheet.png");
-	m_characterMaterial->texture.baseTexture->SetFilter(GameEngine::Texture::Filter::Nearest);
+	m_characterSprite = m_player->AddComponent<Sprite>();
+	m_characterSprite->texture = GameEngine::Texture2D::Create("./res/textures/red-hood-character-sheet.png");
+	m_characterSprite->texture->SetFilter(GameEngine::Texture::Filter::Nearest);
 
 	m_player->GetTransform()->zIndex = 0.2f;
 	m_player->GetTransform()->size = { 2.0f, 2.0f };
@@ -115,8 +128,8 @@ void MainLayer::CreateScene()
 	
 	m_cube = CreateGameObject();
 	m_cube->AddComponent<SpriteRenderer>();
-	auto cubeMaterial = m_cube->AddComponent<RectMaterial>();
-	cubeMaterial->texture.baseTexture = GameEngine::Texture2D::Create("./res/textures/checkerboard.png");
+	auto cubeMaterial = m_cube->AddComponent<Sprite>();
+	cubeMaterial->texture = GameEngine::Texture2D::Create("./res/textures/checkerboard.png");
 
 	// --- editor camera
 

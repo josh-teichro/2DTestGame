@@ -13,17 +13,17 @@ namespace GameEngine
 
 	void SpriteRenderer::OnStart()
 	{
-		m_rectMaterial = GetGameObject()->GetComponent<RectMaterial>();
+		m_sprite = GetGameObject()->GetComponent<Sprite>();
 
-		if (!m_rectMaterial)
+		if (!m_sprite)
 		{
-			GE_ERROR("SpriteRenderer requires a RectMaterial!");
+			GE_ERROR("SpriteRenderer requires a Sprite!");
 		}
 	}
 
 	void SpriteRenderer::OnUpdate()
 	{
-		GameEngine::Renderer2D::DrawRect(*(GetGameObject()->transform), *m_rectMaterial);
+		GameEngine::Renderer2D::DrawRect(*(GetGameObject()->transform), *m_sprite, color);
 	}
 
 }

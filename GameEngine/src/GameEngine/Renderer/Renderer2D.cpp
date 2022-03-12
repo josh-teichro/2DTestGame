@@ -154,7 +154,7 @@ namespace GameEngine {
 		s_data.stats.drawCalls++;
 	}
 
-	void Renderer2D::DrawRect(const RectTransform& transform, const RectMaterial& material)
+	void Renderer2D::DrawRect(const RectTransform& transform, const Sprite& sprite, glm::vec4 color)
 	{
 		GE_PROFILE_FUNCTION();
 
@@ -163,16 +163,15 @@ namespace GameEngine {
 			Reset();
 		}
 
-		glm::vec4 color = material.color;
 		float texIndex = 0.0f;
-		glm::vec2 texOffset = material.textureOffset;
-		glm::vec2 texScaleFactor = 1.0f / material.textureScale;
+		glm::vec2 texOffset = sprite.textureOffset;
+		glm::vec2 texScaleFactor = 1.0f / sprite.textureScale;
 
-		if (material.texture.baseTexture)
+		if (sprite.texture)
 		{
 			for (uint32_t i = 0; i < s_data.textureCount; i++)
 			{
-				if (s_data.textures[i] == material.texture.baseTexture)
+				if (s_data.textures[i] == sprite.texture)
 				{
 					texIndex = (float)i;
 					break;
@@ -187,17 +186,17 @@ namespace GameEngine {
 					Reset();
 				}
 
-				s_data.textures[s_data.textureCount] = material.texture.baseTexture;
+				s_data.textures[s_data.textureCount] = sprite.texture;
 				texIndex = (float)s_data.textureCount;
 				s_data.textureCount++;
 			}
 		}
 
 		glm::vec2 texCoords[] = {
-			{material.texture.textureCoords[0][0], material.texture.textureCoords[0][1]},
-			{material.texture.textureCoords[0][0], material.texture.textureCoords[1][1]},
-			{material.texture.textureCoords[1][0], material.texture.textureCoords[0][1]},
-			{material.texture.textureCoords[1][0], material.texture.textureCoords[1][1]}
+			{sprite.textureRect.x, sprite.textureRect.y},
+			{sprite.textureRect.x, sprite.textureRect.y + sprite.textureRect.height},
+			{sprite.textureRect.x + sprite.textureRect.width, sprite.textureRect.y},
+			{sprite.textureRect.x + sprite.textureRect.width, sprite.textureRect.y + sprite.textureRect.height}
 		};
 
 		for (uint32_t i = 0; i < 4; i++) {

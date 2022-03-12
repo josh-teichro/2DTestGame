@@ -15,8 +15,7 @@
 #include "GameEngine/Components/CameraController2D.h"
 #include "GameEngine/Components/CameraController3D.h"
 #include "GameEngine/Components/RectTransform.h"
-#include "GameEngine/Components/RectTexture.h"
-#include "GameEngine/Components/RectMaterial.h"
+#include "GameEngine/Components/Sprite.h"
 #include "GameEngine/Components/SpriteRenderer.h"
 #include "GameEngine/Components/Transform.h"
 
