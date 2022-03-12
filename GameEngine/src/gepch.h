@@ -17,6 +17,8 @@
 #include <sstream>
 #include <array>
 #include <vector>
+#include <forward_list>
+#include <list>
 #include <unordered_map>
 #include <unordered_set>
 

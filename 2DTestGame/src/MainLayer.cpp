@@ -3,8 +3,7 @@
 #include <imgui.h>
 #include <glm/gtc/type_ptr.hpp>
 
-MainLayer::MainLayer() : 
-	m_cameraController(1.0f)
+MainLayer::MainLayer()
 {
 	CreateScene();
 }
@@ -25,11 +24,9 @@ void MainLayer::OnUpdate()
 {
 	GE_PROFILE_FUNCTION();
 
-	Layer::OnUpdate();
+	//Layer::OnUpdate();
 
 	float deltaTime = GameEngine::Time::GetDeltaTime();
-
-	m_cameraController.OnUpdate();
 
 	// red hood character
 	m_characterAnimationTime += deltaTime;
@@ -48,8 +45,9 @@ void MainLayer::OnUpdate()
 	GameEngine::RenderCommand::Clear();
 
 	GameEngine::Renderer2D::ResetStats();
-	GameEngine::Renderer2D::BeginScene(m_cameraController.GetCamera());
+	GameEngine::Renderer2D::BeginScene(m_cameraController->GetCamera());
 
+	Layer::OnUpdate();
 	// draw character
 	GameEngine::Renderer2D::DrawRect(*m_player->GetTransform(), *m_characterMaterial);
 
@@ -94,25 +92,12 @@ void MainLayer::OnImGuiUpdate()
 	ImGui::Text("Max Texture Slots Used: %d", stats.maxTextureSlotsUsed);
 }
 
-bool MainLayer::OnEvent(const GameEngine::Event& e)
-{
-	GE_PROFILE_FUNCTION();
-
-	bool result = false;
-	result |= m_cameraController.OnEvent(e);
-	result |= HandlesEvents::OnEvent(e);
-	return result;
-}
-
-bool MainLayer::OnKeyUp(const GameEngine::KeyUpEvent& e)
-{
-	return false;
-}
-
 void MainLayer::CreateScene()
 {
 	GE_PROFILE_FUNCTION();
 
+	// --- player
+	
 	//m_player = CreateGameObject({
 	//	std::static_pointer_cast<Component>(MakeRef<RectMaterial>())
 	//});
@@ -125,18 +110,33 @@ void MainLayer::CreateScene()
 
 	m_player->GetTransform()->zIndex = 0.2f;
 	m_player->GetTransform()->size = { 2.0f, 2.0f };
+
+	// --- cube
+	
+	m_cube = CreateGameObject();
+	m_cube->AddComponent<SpriteRenderer>();
+	auto cubeMaterial = m_cube->AddComponent<RectMaterial>();
+	cubeMaterial->texture.baseTexture = GameEngine::Texture2D::Create("./res/textures/checkerboard.png");
+
+	// --- editor camera
+
+	m_editorCamera = CreateGameObject();
+	m_cameraController = m_editorCamera->AddComponent<CameraController2D>();
 }
 
 void MainLayer::ResetScene()
 {
 	GE_PROFILE_FUNCTION();
 
-	m_cameraController.SetZoom(1.0f);
-	m_cameraController.SetPosition({ 0.0f, 0.0f });
+	// ---- player
+	m_player->GetTransform()->position = { 0.0f, 0.0f };
 
 	m_characterAnimationIndex = 9;
 	m_characterAnimationFrameIndex = 0;
 	m_characterAnimationSpeed = 30;
 	m_characterAnimationTime = 0.0f;
-	m_player->GetTransform()->position = { 0.0f, 0.0f };
+
+	// --- editor camera
+	m_cameraController->SetZoom(1.0f);
+	m_cameraController->SetPosition({ 0.0f, 0.0f });
 }

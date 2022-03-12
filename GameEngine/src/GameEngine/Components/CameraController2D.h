@@ -17,6 +17,7 @@ namespace GameEngine
 	public:
 		CameraController2D(float zoom, float aspectRatio);
 		CameraController2D(float zoom);
+		CameraController2D();
 		virtual ~CameraController2D() = default;
 
 		virtual void OnUpdate() override;

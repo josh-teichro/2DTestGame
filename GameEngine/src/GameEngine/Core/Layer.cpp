@@ -60,11 +60,40 @@ namespace GameEngine {
 		}
 	}
 
+	bool Layer::OnEvent(const Event& e)
+	{
+		if (HandlesEvents::OnEvent(e))
+		{
+			return true;
+		}
+
+		for (Ref<GameObject> gameObject : m_objectPool)
+		{
+			for (Ref<Component> component : gameObject->GetComponents())
+			{
+				if (component->OnEvent(e)) 
+				{
+					return true;
+				}
+			}
+		}
+	}
+
+	Ref<GameObject> Layer::CreateGameObject()
+	{
+		return CreateGameObject({});
+	}
+
 	Ref<GameObject> Layer::CreateGameObject(std::initializer_list<Ref<Component>> components)
 	{
-		Ref<GameObject> gameObject = MakeRef<GameObject>(components);
-		m_objectPool.push_back(gameObject);
+		Ref<GameObject> gameObject = GameObject::CreateGameObject(components);
+		m_objectPool.push_front(gameObject);
 		return gameObject;
+	}
+
+	void Layer::DestroyGameObject(Ref<GameObject> gameObject)
+	{
+		m_objectPool.remove(gameObject);
 	}
 
 }

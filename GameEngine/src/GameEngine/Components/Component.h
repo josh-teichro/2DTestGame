@@ -6,6 +6,7 @@
 
 namespace GameEngine 
 {
+	class GameObject;
 
 	class Component : public HandlesEvents
 	{
@@ -19,6 +20,13 @@ namespace GameEngine
 		virtual void OnUpdate() {};
 
 		virtual void OnImGuiUpdate() {};
+
+		Ref<GameObject> GetGameObject() const;
+
+	private:
+		friend GameObject;
+
+		WeakRef<GameObject> m_gameObject;
 
 	};
 

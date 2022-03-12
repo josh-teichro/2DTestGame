@@ -32,6 +32,9 @@ namespace GameEngine
 	CameraController2D::CameraController2D(float zoom) :
 		CameraController2D(zoom, GetWindowAspectRatio()) {}
 
+	CameraController2D::CameraController2D() :
+		CameraController2D(1.0f, GetWindowAspectRatio()) {}
+
 	void CameraController2D::OnUpdate()
 	{
 		GE_PROFILE_FUNCTION();

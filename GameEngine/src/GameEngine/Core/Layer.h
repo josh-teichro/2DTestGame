@@ -39,6 +39,11 @@ namespace GameEngine {
 		virtual void OnImGuiUpdate();
 
 		/**
+		* Event callback.
+		*/
+		virtual bool OnEvent(const Event& e) override;
+
+		/**
 		* Get the Layer name (for debugging).
 		*/
 		inline const std::string& GetName() const { return m_debugName; }
@@ -46,25 +51,22 @@ namespace GameEngine {
 		/**
 		* Create a GameObject specific to this layer.
 		*/
-		template<typename...Args>
-		Ref<GameObject> CreateGameObject(Args&&...args);
+		Ref<GameObject> CreateGameObject();
 
+		/**
+		* Create a GameObject specific to this layer.
+		*/
 		Ref<GameObject> CreateGameObject(std::initializer_list<Ref<Component>> components);
+
+		/**
+		* Destroy a gameobject.
+		*/
+		void DestroyGameObject(Ref<GameObject> gameObject);
 
 	private:
 		std::string m_debugName;
 
-		std::vector<Ref<GameObject>> m_objectPool;
+		std::forward_list<Ref<GameObject>> m_objectPool;
 	};
-
-	// -------------------------------------
-
-	template<typename...Args>
-	Ref<GameObject> Layer::CreateGameObject(Args&&...args)
-	{
-		Ref<GameObject> gameObject = MakeRef<GameObject>(std::forward<Args>(args)...);
-		m_objectPool.push_back(gameObject);
-		return gameObject;
-	}
 
 }

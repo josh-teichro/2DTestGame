@@ -6,17 +6,13 @@
 namespace GameEngine
 {
 
-	class GameObject
+	class GameObject : public std::enable_shared_from_this<GameObject>
 	{
 	public:
-		GameObject() : GameObject({}) {}
+		static Ref<GameObject> CreateGameObject() { return CreateGameObject({}); }
+		static Ref<GameObject> CreateGameObject(std::initializer_list<Ref<Component>> components) { return Ref<GameObject>(new GameObject(components)); }
 
-		//GameObject(const GameObject&) = delete;
-		GameObject(std::initializer_list<Ref<Component>> components) : 
-			components(components), 
-			transform(MakeRef<RectTransform>()) {}
-
-		GameObject& operator=(std::initializer_list<Ref<Component>> components) { this->components = components; return *this; }
+		GameObject& operator=(std::initializer_list<Ref<Component>> components) { this->m_components = components; return *this; }
 
 		template <typename T>
 		Ref<T> AddComponent();
@@ -24,14 +20,23 @@ namespace GameEngine
 		template <typename T>
 		Ref<T> GetComponent();
 
-		std::vector<Ref<Component>> GetComponents() { return components; }
+		std::vector<Ref<Component>> GetComponents() { return m_components; }
 
 		Ref<RectTransform> GetTransform() { return transform; }
 
 	private:
-		std::vector<Ref<Component>> components;
+		GameObject() : GameObject({}) {}
+		GameObject(const GameObject&) = delete;
 
+		GameObject(std::initializer_list<Ref<Component>> components) :
+			m_components(components),
+			transform(MakeRef<RectTransform>()) {}
+
+	public:
 		Ref<RectTransform> transform;
+
+	private:
+		std::vector<Ref<Component>> m_components;
 
 	};
 
@@ -42,15 +47,19 @@ namespace GameEngine
 	template<typename T>
 	inline Ref<T> GameObject::AddComponent()
 	{
-		Ref<T> newComponent = MakeRef<T>();
-		components.push_back(newComponent);
-		return newComponent;
+		static_assert(std::is_base_of<Component, T>::value, "Cannot add non-Component to GameObject using AddComponent");
+
+		Ref<T> newComponentAsType = MakeRef<T>();
+		Ref<Component> newComponent = std::static_pointer_cast<Component>(newComponentAsType);
+		newComponent->m_gameObject = shared_from_this();
+		m_components.push_back(newComponent);
+		return newComponentAsType;
 	}
 
 	template<typename T>
 	inline Ref<T> GameObject::GetComponent()
 	{
-		for (Ref<Component> component : components) 
+		for (Ref<Component> component : m_components) 
 		{
 			Ref<T> temp = std::dynamic_pointer_cast<T>(component);
 

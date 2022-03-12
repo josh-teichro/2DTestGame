@@ -16,18 +16,16 @@ public:
 	virtual void OnUpdate() override;
 	virtual void OnImGuiUpdate() override;
 
-	virtual bool OnEvent(const GameEngine::Event& e) override;
-	virtual bool OnKeyUp(const GameEngine::KeyUpEvent& e) override;
-
 private:
-	GameEngine::CameraController2D m_cameraController;
 
 	GameEngine::ShaderLibrary m_shaderLibrary;
 
 	// GameObjects
 	Ref<GameObject> m_player;
+	Ref<GameObject> m_cube;
+	Ref<GameObject> m_editorCamera;
 
-	// red hood character
+	// player components references
 	const glm::vec2 c_characterSheetSize = { 1344, 1463 };
 	const glm::vec2 c_characterSheetNumCells = { 12.0f, 11.0f };
 	const glm::vec2 c_characterSheetCellSize = c_characterSheetSize / c_characterSheetNumCells;
@@ -37,6 +35,9 @@ private:
 	int32_t m_characterAnimationFrameIndex;
 	float m_characterAnimationSpeed;
 	float m_characterAnimationTime;
+
+	// editor camera components references
+	Ref<CameraController2D> m_cameraController;
 
 private:
 	void CreateScene();
