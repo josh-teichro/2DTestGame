@@ -35,7 +35,7 @@ namespace GameEngine {
 
 		static void Flush();
 
-		static void DrawRect(const RectTransform& transform, const Sprite& sprite, glm::vec4 color);
+		static void DrawRect(const RectTransform& transform, Ref<Texture2D> texture, const Rect& rect, glm::vec4 color);
 
 		static API GetAPI() { return RenderCommand::GetAPI(); }
 

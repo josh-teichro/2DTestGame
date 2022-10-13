@@ -31,10 +31,8 @@ private:
 	const glm::vec2 c_characterSheetCellSize = c_characterSheetSize / c_characterSheetNumCells;
 	
 	Ref<Sprite> m_characterSprite;
+	Ref<SpriteAnimator> m_characterSpriteAnimator;
 	int32_t m_characterAnimationIndex;
-	int32_t m_characterAnimationFrameIndex;
-	float m_characterAnimationSpeed;
-	float m_characterAnimationTime;
 
 	// editor camera components references
 	Ref<CameraController2D> m_cameraController;

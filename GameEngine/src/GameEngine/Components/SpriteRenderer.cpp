@@ -23,7 +23,14 @@ namespace GameEngine
 
 	void SpriteRenderer::OnUpdate()
 	{
-		GameEngine::Renderer2D::DrawRect(*(GetGameObject()->transform), *m_sprite, color);
+		Rect rect = {
+			m_sprite->textureOffset.x + m_sprite->textureRect.x,
+			m_sprite->textureOffset.y + m_sprite->textureRect.y,
+			m_sprite->textureScale.y * m_sprite->textureRect.width,
+			m_sprite->textureScale.y * m_sprite->textureRect.height,
+		};
+
+		Renderer2D::DrawRect(*(GetGameObject()->transform), m_sprite->texture, rect, color);
 	}
 
 }

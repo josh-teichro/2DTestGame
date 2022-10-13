@@ -17,6 +17,7 @@
 #include "GameEngine/Components/RectTransform.h"
 #include "GameEngine/Components/Sprite.h"
 #include "GameEngine/Components/SpriteRenderer.h"
+#include "GameEngine/Components/SpriteAnimator.h"
 #include "GameEngine/Components/Transform.h"
 
 // --- Events -------------------------------------

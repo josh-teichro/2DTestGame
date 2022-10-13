@@ -2,3 +2,4 @@
 
 #include "./Color.h"
 #include "./Rect.h"
+#include "./TextureAtlas.h"
