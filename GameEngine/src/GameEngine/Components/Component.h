@@ -7,6 +7,7 @@
 namespace GameEngine 
 {
 	class GameObject;
+	class RectTransform;
 
 	class Component : public HandlesEvents
 	{
@@ -22,6 +23,8 @@ namespace GameEngine
 		virtual void OnImGuiUpdate() {};
 
 		Ref<GameObject> GetGameObject() const;
+
+		Ref<RectTransform> GetTransform() const;
 
 	private:
 		friend GameObject;

@@ -3,6 +3,8 @@
 #include <imgui.h>
 #include <glm/gtc/type_ptr.hpp>
 
+#include "Components/Player.h"
+
 MainLayer::MainLayer()
 {
 	CreateScene();
@@ -64,32 +66,14 @@ void MainLayer::OnImGuiUpdate()
 
 	Layer::OnImGuiUpdate();
 
-	ImGui::Text("Character");
-	ImGui::DragFloat2("Position", glm::value_ptr(m_player->GetTransform()->position), 0.1f);
-	if (ImGui::BeginCombo("Animation", std::to_string(m_characterAnimationIndex).c_str()))
-	{
-		for (int i = 0; i < (int)c_characterSheetNumCells[1]; i++)
-		{
-			bool is_selected = (m_characterAnimationIndex == i);
-			if (ImGui::Selectable(std::to_string(i).c_str(), is_selected)) {
-				m_characterAnimationIndex = i;
-				m_characterSpriteAnimator->startFrame = { 0, i };
-			}
-			if (is_selected)
-				ImGui::SetItemDefaultFocus();  
-		}
-		ImGui::EndCombo();
-	}
-	ImGui::DragFloat("Animation Speed", &m_characterSpriteAnimator->framesPerSec, 1.0f, 0.0f, 60.0f);
+	//Ref<Sprite> cubeSprite = m_cube->GetComponent<Sprite>();
 
-	Ref<Sprite> cubeSprite = m_cube->GetComponent<Sprite>();
-
-	ImGui::Text("Sprite");
-	ImGui::DragFloat2("Position##Sprite", glm::value_ptr(m_cube->GetTransform()->position), 0.1f);
-	ImGui::DragFloat2("Texture Offset##Sprite", glm::value_ptr(cubeSprite->textureOffset), 0.1f);
-	ImGui::DragFloat2("Texture Scale##Sprite", glm::value_ptr(cubeSprite->textureScale), 0.1f);
-	ImGui::DragFloat4("Texture Rect##Sprite", &cubeSprite->textureRect.x, 0.1f);
-	ImGui::ColorPicker4("Color##Sprite", glm::value_ptr(m_cube->GetComponent<SpriteRenderer>()->color));
+	//ImGui::Text("Sprite");
+	//ImGui::DragFloat2("Position##Sprite", glm::value_ptr(m_cube->GetTransform()->position), 0.1f);
+	//ImGui::DragFloat2("Texture Offset##Sprite", glm::value_ptr(cubeSprite->textureOffset), 0.1f);
+	//ImGui::DragFloat2("Texture Scale##Sprite", glm::value_ptr(cubeSprite->textureScale), 0.1f);
+	//ImGui::DragFloat4("Texture Rect##Sprite", &cubeSprite->textureRect.x, 0.1f);
+	//ImGui::ColorPicker4("Color##Sprite", glm::value_ptr(m_cube->GetComponent<SpriteRenderer>()->color));
 
 	if (ImGui::Button("Reset"))
 	{
@@ -115,28 +99,23 @@ void MainLayer::CreateScene()
 	//	std::static_pointer_cast<Component>(MakeRef<RectMaterial>())
 	//});
 
-	m_player = CreateGameObject();
+	m_playerObject = CreateGameObject();
+	m_player = m_playerObject->AddComponent<Player>();
 
-	m_characterSprite = m_player->AddComponent<Sprite>();
-	m_characterSprite->texture = GameEngine::Texture2D::Create("./res/textures/red-hood-character-sheet.png");
-	m_characterSprite->texture->SetFilter(GameEngine::Texture::Filter::Nearest);
+	//m_characterSprite = m_playerObject->AddComponent<Sprite>();
+	//m_characterSprite->texture = GameEngine::Texture2D::Create("./res/textures/red-hood-character-sheet.png");
+	//m_characterSprite->texture->SetFilter(GameEngine::Texture::Filter::Nearest);
 
-	m_characterSpriteAnimator = m_player->AddComponent<SpriteAnimator>();
 
-	Ref<Texture2D> texture = GameEngine::Texture2D::Create("./res/textures/red-hood-character-sheet.png");
-	texture->SetFilter(GameEngine::Texture::Filter::Nearest);
-	TextureAtlas textureAtlas = TextureAtlas(c_characterSheetNumCells[0], c_characterSheetNumCells[1], texture);
-	m_characterSpriteAnimator->SetTextureAtlas(textureAtlas);
-
-	m_player->GetTransform()->zIndex = 0.2f;
-	m_player->GetTransform()->size = { 2.0f, 2.0f };
+	m_playerObject->GetTransform()->zIndex = 0.2f;
+	m_playerObject->GetTransform()->size = { 1.0f, 1.0f };
 
 	// --- cube
 	
-	m_cube = CreateGameObject();
-	m_cube->AddComponent<SpriteRenderer>();
-	auto cubeMaterial = m_cube->AddComponent<Sprite>();
-	cubeMaterial->texture = GameEngine::Texture2D::Create("./res/textures/checkerboard.png");
+	//m_cube = CreateGameObject();
+	//m_cube->AddComponent<SpriteRenderer>();
+	//auto cubeMaterial = m_cube->AddComponent<Sprite>();
+	//cubeMaterial->texture = GameEngine::Texture2D::Create("./res/textures/checkerboard.png");
 
 	// --- editor camera
 
@@ -149,13 +128,8 @@ void MainLayer::ResetScene()
 	GE_PROFILE_FUNCTION();
 
 	// ---- player
-	m_player->GetTransform()->position = { 0.0f, 0.0f };
-
-	m_characterAnimationIndex = 0;
-
-	m_characterSpriteAnimator->framesPerSec = 30.0f;
-	m_characterSpriteAnimator->startFrame = { 0, 0 };
-	m_characterSpriteAnimator->numFrames = c_characterSheetNumCells[0];
+	m_playerObject->GetTransform()->position = { 0.0f, 0.0f };
+	m_player->Reset();
 
 	// --- editor camera
 	m_cameraController->SetZoom(1.0f);

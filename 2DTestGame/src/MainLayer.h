@@ -1,6 +1,8 @@
 #pragma once
 
 #include <GameEngine.h>
+#include <string>
+#include "Components/Player.h"
 
 using namespace GameEngine;
 
@@ -20,19 +22,12 @@ private:
 
 	GameEngine::ShaderLibrary m_shaderLibrary;
 
-	// GameObjects
-	Ref<GameObject> m_player;
+	Ref<GameObject> m_playerObject;
 	Ref<GameObject> m_cube;
 	Ref<GameObject> m_editorCamera;
-
-	// player components references
-	const glm::vec2 c_characterSheetSize = { 1344, 1463 };
-	const glm::vec2 c_characterSheetNumCells = { 12.0f, 11.0f };
-	const glm::vec2 c_characterSheetCellSize = c_characterSheetSize / c_characterSheetNumCells;
 	
+	Ref<Player> m_player;
 	Ref<Sprite> m_characterSprite;
-	Ref<SpriteAnimator> m_characterSpriteAnimator;
-	int32_t m_characterAnimationIndex;
 
 	// editor camera components references
 	Ref<CameraController2D> m_cameraController;

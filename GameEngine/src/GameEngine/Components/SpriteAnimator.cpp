@@ -1,17 +1,40 @@
 #include "gepch.h"
 
 #include "GameEngine/Components/SpriteAnimator.h"
-#include "GameEngine/Core/GameObject.h"
 #include "GameEngine/Core/Time.h"
 #include "GameEngine/Renderer/Renderer2D.h"
+#include "GameEngine/Core/GameObject.h"
+
 
 namespace GameEngine
 {
-
 	SpriteAnimator::SpriteAnimator() :
-		m_curFramePos({0.0f, 0.0f}),
-		m_frameTime(0.0f)
+		curFrame(0),
+		m_curFrameTime(0.0f),
+		m_curFramePos({ 0.0f, 0.0f })
 	{
+	}
+
+	void SpriteAnimator::AddAnimation(std::string name, SpriteAnimation animation)
+	{
+		m_animations[name] = animation;
+	}
+
+	void SpriteAnimator::RemoveAnimation(std::string name)
+	{
+		m_animations.erase(name);
+	}
+
+	Ref<SpriteAnimation> SpriteAnimator::GetCurrentAnimation()
+	{
+		return MakeRef<SpriteAnimation>(m_curAnimation);
+	}
+
+	void SpriteAnimator::SetCurrentAnimation(std::string name)
+	{
+		m_curAnimation = m_animations[name];
+		curFrame = 0;
+		m_curFramePos = m_curAnimation.startFrame;
 	}
 
 	void SpriteAnimator::OnStart()
@@ -22,44 +45,31 @@ namespace GameEngine
 	{
 		float deltaTime = Time::GetDeltaTime();
 
-		GameEngine::Renderer2D::DrawRect(*(GetGameObject()->transform), m_textureAtlas.GetBaseTexture(), m_textureAtlas.Get(m_curFramePos.x, m_curFramePos.y), color);
+		GameEngine::Renderer2D::DrawRect(*(GetGameObject()->transform), m_curAnimation.textureAtlas.GetBaseTexture(), m_curAnimation.textureAtlas.Get(m_curFramePos.x, m_curFramePos.y), m_curAnimation.color);
 
-		m_frameTime += deltaTime;
+		m_curFrameTime += deltaTime;
 
-		while (m_frameTime > 1 / framesPerSec)
+		while (m_curFrameTime > 1 / m_curAnimation.framesPerSec)
 		{
 			GetNextFrame();
-			m_frameTime -= 1 / framesPerSec;
+			m_curFrameTime -= 1 / m_curAnimation.framesPerSec;
 		}
-	}
-
-	void SpriteAnimator::SetTextureAtlas(TextureAtlas textureAtlas) { 
-		m_textureAtlas = textureAtlas; 
-
-		if (startFrame.x < 0)
-			startFrame.x = 0;
-
-		if (startFrame.y < 0)
-			startFrame.y = 0;
-
-		if (numFrames < 0)
-			numFrames = textureAtlas.GetCols() * textureAtlas.GetRows();
 	}
 
 	void SpriteAnimator::GetNextFrame()
 	{
 		curFrame++;
 
-		if (curFrame >= numFrames)
+		if (curFrame >= m_curAnimation.numFrames)
 		{
 			curFrame = 0;
-			m_curFramePos = startFrame;
+			m_curFramePos = m_curAnimation.startFrame;
 		}
-		else 
+		else
 		{
 			m_curFramePos.x++;
 
-			if (m_curFramePos.x >= (int)m_textureAtlas.GetCols())
+			if (m_curFramePos.x >= (int)m_curAnimation.textureAtlas.GetCols())
 			{
 				m_curFramePos.x = 0;
 				IncY();
@@ -71,11 +81,10 @@ namespace GameEngine
 	{
 		m_curFramePos.y++;
 
-		if (m_curFramePos.y >= (int)m_textureAtlas.GetRows())
+		if (m_curFramePos.y >= (int)m_curAnimation.textureAtlas.GetRows())
 		{
 			m_curFramePos.x = 0;
 			m_curFramePos.y = 0;
 		}
 	}
-
 }

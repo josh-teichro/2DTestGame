@@ -1,6 +1,8 @@
 #include "gepch.h"
 #include "Component.h"
 
+#include "GameEngine/Core/GameObject.h"
+
 namespace GameEngine
 {
 
@@ -14,6 +16,11 @@ namespace GameEngine
         {
             GE_ERROR("Referencing a GameObject that has been destroyed!");
         }
+    }
+
+    Ref<RectTransform> Component::GetTransform() const
+    {
+        return GetGameObject()->GetTransform();
     }
 
 }
