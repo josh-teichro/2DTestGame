@@ -23,10 +23,12 @@ private:
 	GameEngine::ShaderLibrary m_shaderLibrary;
 
 	Ref<GameObject> m_playerObject;
-	Ref<GameObject> m_cube;
+	Ref<GameObject> m_background;
 	Ref<GameObject> m_editorCamera;
 	
 	Ref<Player> m_player;
+
+	bool m_followPlayer;
 
 	// editor camera components references
 	Ref<CameraController2D> m_cameraController;

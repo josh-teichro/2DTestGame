@@ -57,6 +57,9 @@ void MainLayer::OnUpdate()
 	// draw character
 	//GameEngine::Renderer2D::DrawRect(*m_player->GetTransform(), *m_characterSprite, {1.0f, 1.0f, 1.0f, 1.0f});
 
+	if (m_followPlayer)
+		m_cameraController->SetPosition(m_player->GetTransform()->position);
+
 	GameEngine::Renderer2D::EndScene();
 }
 
@@ -66,14 +69,15 @@ void MainLayer::OnImGuiUpdate()
 
 	Layer::OnImGuiUpdate();
 
-	//Ref<Sprite> cubeSprite = m_cube->GetComponent<Sprite>();
+	Ref<Sprite> cubeSprite = m_background->GetComponent<Sprite>();
 
-	//ImGui::Text("Sprite");
-	//ImGui::DragFloat2("Position##Sprite", glm::value_ptr(m_cube->GetTransform()->position), 0.1f);
-	//ImGui::DragFloat2("Texture Offset##Sprite", glm::value_ptr(cubeSprite->textureOffset), 0.1f);
-	//ImGui::DragFloat2("Texture Scale##Sprite", glm::value_ptr(cubeSprite->textureScale), 0.1f);
+	ImGui::Text("Camera");
+	ImGui::Checkbox("Follow Player", &m_followPlayer);
+
+	ImGui::Text("Grass Texture");
+	ImGui::DragFloat("Scale##Sprite", &cubeSprite->textureScale.y, 0.1f);
 	//ImGui::DragFloat4("Texture Rect##Sprite", &cubeSprite->textureRect.x, 0.1f);
-	//ImGui::ColorPicker4("Color##Sprite", glm::value_ptr(m_cube->GetComponent<SpriteRenderer>()->color));
+	ImGui::ColorPicker4("Color##Sprite", glm::value_ptr(m_background->GetComponent<SpriteRenderer>()->color));
 
 	if (ImGui::Button("Reset"))
 	{
@@ -110,12 +114,12 @@ void MainLayer::CreateScene()
 	m_playerObject->GetTransform()->zIndex = 0.2f;
 	m_playerObject->GetTransform()->size = { 1.0f, 1.0f };
 
-	// --- cube
-	
-	//m_cube = CreateGameObject();
-	//m_cube->AddComponent<SpriteRenderer>();
-	//auto cubeMaterial = m_cube->AddComponent<Sprite>();
-	//cubeMaterial->texture = GameEngine::Texture2D::Create("./res/textures/checkerboard.png");
+	// --- background
+	m_background = CreateGameObject();
+	m_background->GetTransform()->size = { 10.0f, 10.0f };
+	m_background->AddComponent<SpriteRenderer>();
+	auto cubeMaterial = m_background->AddComponent<Sprite>();
+	cubeMaterial->texture = GameEngine::Texture2D::Create("./res/textures/grass.png");
 
 	// --- editor camera
 
@@ -131,7 +135,15 @@ void MainLayer::ResetScene()
 	m_playerObject->GetTransform()->position = { 0.0f, 0.0f };
 	m_player->Reset();
 
+	// --- background
+	Ref<Sprite> backgroundSprite = m_background->GetComponent<Sprite>();
+	Ref<SpriteRenderer> backgroundSpriteRenderer = m_background->GetComponent<SpriteRenderer>();
+	backgroundSprite->textureScale = { 1.0f, -40.0f };
+	backgroundSpriteRenderer->color = { 0.8f, 0.8f, 0.8f, 1.0f };
+
 	// --- editor camera
 	m_cameraController->SetZoom(1.0f);
 	m_cameraController->SetPosition({ 0.0f, 0.0f });
+
+	m_followPlayer = true;
 }

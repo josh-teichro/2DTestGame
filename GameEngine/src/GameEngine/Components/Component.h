@@ -12,6 +12,9 @@ namespace GameEngine
 	class Component : public HandlesEvents
 	{
 	public:
+		bool enabled = true;
+
+	public:
 		virtual ~Component() = default;
 
 		virtual void OnStart() {};

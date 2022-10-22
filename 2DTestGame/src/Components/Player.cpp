@@ -96,21 +96,21 @@ void Player::OnUpdate()
 
 void Player::OnImGuiUpdate()
 {
-	ImGui::Text("Character");
-	if (ImGui::BeginCombo("Animation", c_animations[m_characterAnimationIndex].c_str()))
-	{
-		for (int i = 0; i < (int)c_characterSheetNumCells[1]; i++)
-		{
-			bool is_selected = (m_characterAnimationIndex == i);
-			if (ImGui::Selectable(c_animations[i].c_str(), is_selected)) {
-				m_characterAnimationIndex = i;
-				m_characterSpriteAnimator->SetCurrentAnimation(c_animations[i]);
-			}
-			if (is_selected)
-				ImGui::SetItemDefaultFocus();
-		}
-		ImGui::EndCombo();
-	}
+	//ImGui::Text("Character");
+	//if (ImGui::BeginCombo("Animation", c_animations[m_characterAnimationIndex].c_str()))
+	//{
+	//	for (int i = 0; i < (int)c_characterSheetNumCells[1]; i++)
+	//	{
+	//		bool is_selected = (m_characterAnimationIndex == i);
+	//		if (ImGui::Selectable(c_animations[i].c_str(), is_selected)) {
+	//			m_characterAnimationIndex = i;
+	//			m_characterSpriteAnimator->SetCurrentAnimation(c_animations[i]);
+	//		}
+	//		if (is_selected)
+	//			ImGui::SetItemDefaultFocus();
+	//	}
+	//	ImGui::EndCombo();
+	//}
 }
 
 bool Player::OnMouseDown(const MouseDownEvent& e)

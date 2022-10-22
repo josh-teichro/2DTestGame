@@ -44,7 +44,8 @@ namespace GameEngine {
 		{
 			for (Ref<Component> component : gameObject->GetComponents())
 			{
-				component->OnUpdate();
+				if (component->enabled)
+					component->OnUpdate();
 			}
 		}
 	}
@@ -55,7 +56,8 @@ namespace GameEngine {
 		{
 			for (Ref<Component> component : gameObject->GetComponents())
 			{
-				component->OnImGuiUpdate();
+				if (component->enabled)
+					component->OnImGuiUpdate();
 			}
 		}
 	}
@@ -71,7 +73,7 @@ namespace GameEngine {
 		{
 			for (Ref<Component> component : gameObject->GetComponents())
 			{
-				if (component->OnEvent(e)) 
+				if (component->enabled && component->OnEvent(e)) 
 				{
 					return true;
 				}
