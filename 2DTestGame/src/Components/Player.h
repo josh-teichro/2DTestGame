@@ -22,6 +22,9 @@ public:
 	void Reset();
 	void SetState(State newState);
 
+	void Move(glm::vec2 direction);
+	void Attack();
+
 private:
 	// constants
 	const glm::vec2 c_characterSheetSize = { 1344, 1463 };
@@ -55,5 +58,9 @@ private:
 	virtual void OnUpdate() override;
 
 	virtual void OnImGuiUpdate() override;
+
+	virtual bool OnMouseDown(const MouseDownEvent& e) override;
+
+	glm::vec2 ReadInput();
 
 };

@@ -34,6 +34,31 @@ void Player::SetState(State newState)
 	m_state = newState;
 }
 
+void Player::Move(glm::vec2 moveDir)
+{
+	if (moveDir.x == 0.0f && moveDir.y == 0.0f)
+		return;
+
+	if (m_characterSpriteAnimator->GetCurrentAnimation() == "Quick Slash")
+		return;
+
+	float deltaTime = Time::GetDeltaTime();
+
+	moveDir = glm::normalize(moveDir);
+	GetTransform()->position += deltaTime * speed * moveDir;
+
+	if (moveDir.x < 0.0f)
+		GetTransform()->size.x = abs(GetTransform()->size.x);
+	else if (moveDir.x > 0.0f)
+		GetTransform()->size.x = -abs(GetTransform()->size.x);
+
+}
+
+void Player::Attack()
+{
+	m_characterSpriteAnimator->PlayOnce("Quick Slash");
+}
+
 void Player::OnStart()
 {
 	m_characterSpriteAnimator = GetGameObject()->AddComponent<SpriteAnimator>();
@@ -54,30 +79,19 @@ void Player::OnStart()
 void Player::OnUpdate()
 {
 	float deltaTime = Time::GetDeltaTime();
-	bool isMoving = false;
 
-	if (Input::GetKeyDown(KeyCode::W)) {
-		GetTransform()->position.y += deltaTime * speed;
-		isMoving = true;
-	}
-	else if (Input::GetKeyDown(KeyCode::S)) {
-		GetTransform()->position.y -= deltaTime * speed;
-		isMoving = true;
-	}
-
-	if (Input::GetKeyDown(KeyCode::A)) {
-		GetTransform()->position.x -= deltaTime * speed;
-		isMoving = true;
-	}
-	else if (Input::GetKeyDown(KeyCode::D)) {
-		GetTransform()->position.x += deltaTime * speed;
-		isMoving = true;
-	}
+	glm::vec2 moveDir = ReadInput();
+	bool isMoving = (moveDir.x != 0.0f || moveDir.y != 0.0f);
 
 	if (isMoving)
+	{
+		Move(moveDir);
 		SetState(State::Running);
+	}
 	else
+	{
 		SetState(State::Idle);
+	}
 }
 
 void Player::OnImGuiUpdate()
@@ -97,4 +111,32 @@ void Player::OnImGuiUpdate()
 		}
 		ImGui::EndCombo();
 	}
+}
+
+bool Player::OnMouseDown(const MouseDownEvent& e)
+{
+	Attack();
+
+	return false;
+}
+
+glm::vec2 Player::ReadInput()
+{
+	glm::vec2 input = { 0.0f, 0.0f };
+
+	if (Input::GetKeyDown(KeyCode::W) || Input::GetKeyDown(KeyCode::UpArrow)) {
+		input.y += 1.0f;
+	}
+	else if (Input::GetKeyDown(KeyCode::S) || Input::GetKeyDown(KeyCode::DownArrow)) {
+		input.y -= 1.0f;
+	}
+
+	if (Input::GetKeyDown(KeyCode::A) || Input::GetKeyDown(KeyCode::LeftArrow)) {
+		input.x -= 1.0f;
+	}
+	else if (Input::GetKeyDown(KeyCode::D) || Input::GetKeyDown(KeyCode::RightArrow)) {
+		input.x += 1.0f;
+	}
+
+	return input;
 }

@@ -11,7 +11,8 @@ namespace GameEngine
 	SpriteAnimator::SpriteAnimator() :
 		curFrame(0),
 		m_curFrameTime(0.0f),
-		m_curFramePos({ 0.0f, 0.0f })
+		m_curFramePos({ 0.0f, 0.0f }),
+		m_isPlayingOnce(false)
 	{
 	}
 
@@ -25,16 +26,33 @@ namespace GameEngine
 		m_animations.erase(name);
 	}
 
-	Ref<SpriteAnimation> SpriteAnimator::GetCurrentAnimation()
+	std::string SpriteAnimator::GetCurrentAnimation()
 	{
-		return MakeRef<SpriteAnimation>(m_curAnimation);
+		return m_curAnimationName;
 	}
 
 	void SpriteAnimator::SetCurrentAnimation(std::string name)
 	{
 		m_curAnimation = m_animations[name];
+		m_curAnimationName = name;
 		curFrame = 0;
 		m_curFramePos = m_curAnimation.startFrame;
+		m_isPlayingOnce = false;
+	}
+
+	void SpriteAnimator::PlayOnce(std::string name)
+	{
+		if (!m_isPlayingOnce)
+		{
+			m_prevAnimation = m_curAnimation;
+			m_prevAnimationName = m_curAnimationName;
+		}
+
+		m_curAnimation = m_animations[name];
+		m_curAnimationName = name;
+		curFrame = 0;
+		m_curFramePos = m_curAnimation.startFrame;
+		m_isPlayingOnce = true;
 	}
 
 	void SpriteAnimator::OnStart()
@@ -62,6 +80,13 @@ namespace GameEngine
 
 		if (curFrame >= m_curAnimation.numFrames)
 		{
+			if (m_isPlayingOnce)
+			{
+				m_curAnimation = m_prevAnimation;
+				m_curAnimationName = m_prevAnimationName;
+				m_isPlayingOnce = false;
+			}
+
 			curFrame = 0;
 			m_curFramePos = m_curAnimation.startFrame;
 		}

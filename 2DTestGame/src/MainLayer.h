@@ -27,7 +27,6 @@ private:
 	Ref<GameObject> m_editorCamera;
 	
 	Ref<Player> m_player;
-	Ref<Sprite> m_characterSprite;
 
 	// editor camera components references
 	Ref<CameraController2D> m_cameraController;
