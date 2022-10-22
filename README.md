@@ -1,9 +1,9 @@
-# game-engine
-My game engine, built from scratch.
+# 2D Test Game
+Quick test project to help test and come up with new features for my game engine project at https://github.com/josh-teichro/game-engine
 
 ## Current Progress
 
-<img src="examples/game-engine-progress-2021-11-06.gif">
+<img src="examples/2d-test-game.gif">
 
 Character animation credit: <a href="https://legnops.itch.io/red-hood-character">https://legnops.itch.io/red-hood-character</a>
 
@@ -11,12 +11,12 @@ Character animation credit: <a href="https://legnops.itch.io/red-hood-character"
 
 To run the above demo yourself, first clone this repo onto your local PC:
 
-`git clone --recurse-submodules https://github.com/josh-teichro/game-engine.git`
+`git clone --recurse-submodules https://github.com/josh-teichro/2DTestGame.git`
 
 Then cd into the directory and generate the project solution:
 
 ```
-cd game-engine
+cd 2DTestGame
 scripts/Win-GenProjects.bat
 ```
 
